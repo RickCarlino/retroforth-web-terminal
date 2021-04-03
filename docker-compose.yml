@@ -1,0 +1,12 @@
+version: "3"
+services:
+  web:
+    env_file: ".env"
+    depends_on: []
+    image: ubuntu:latest
+    volumes: ["./bin:/exe", "./public:/www", "./forth_src:/forth"]
+    stdin_open: true
+    tty: true
+    command: ./exe/websocketd --binary --port=9999 --staticdir=/www ./exe/retro
+    ports: ["3000:9999"]
+

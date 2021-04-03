@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/xterm.min.css"
+    integrity="sha512-iLYuqv+v/P4u9erpk+KM83Ioe/l7SEmr7wB6g+Kg1qmEit8EShDKnKtLHlv2QXUp7GGJhmqDI+1PhJYLTsfb8w=="
+    crossorigin="anonymous" />
+</head>
+
+<body>
+  <h1>RetroForth Web Terminal</h1>
+  <div id="terminal"></div>
+  <script type="module">
+    import xterm from 'https://cdn.skypack.dev/xterm';
+
+    const ws = new WebSocket("ws://" + location.host)
+    const term = new xterm.Terminal();
+
+    function str2ab(str) {
+      var buf = new ArrayBuffer(str.length);
+      var bufView = new Uint8Array(buf);
+      for (var i = 0, strLen = str.length; i < strLen; i++) {
+        bufView[i] = str.charCodeAt(i);
+      }
+      return buf;
+    }
+
+    term.open(document.getElementById('terminal'));
+
+    ws.binaryType = "arraybuffer";
+    ws.onerror = (e) => term.write("Error: " + JSON.stringify(e) + "\r\n");
+    ws.onopen = (e) => term.write("Connected\r\n");
+
+    ws.addEventListener('message', function (event) {
+      const buffer = new Uint8Array(event.data);
+      for (let index = 0; index < buffer.length; index++) {
+        term.write(String.fromCharCode(buffer[index]));
+      }
+    });
+
+    term.onKey(({ key: key }) => {
+      switch (key) {
+        case "\r":
+          ws.send(str2ab("\n"));
+          term.write("\r\n");
+          break;
+        default:
+          ws.send(str2ab(key));
+          term.write(key)
+          break;
+      }
+    })
+
+  </script>
+</body>
+
+</html>
