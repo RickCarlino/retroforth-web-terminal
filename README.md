@@ -6,7 +6,7 @@ Run a Retroforth session in a docker container, in a browser, over websockets.
 
 ## USE A FIREWALL!
 
-This is a huge security risk on untrusted networks. Anyone accessing http://localhost:3000 can run arbitrary Forth commands. You probably don't want to run this on a public server without first changing a few things.
+This is a huge security risk on untrusted networks. Anyone accessing http://localhost:3000 can run arbitrary Forth commands (albeit in a Docker container). You probably don't want to run this on a public server without first changing a few things.
 
 ## Why?
 
@@ -28,4 +28,6 @@ visit  http://localhost:3000
 
 ## Customize
 
-`websocketd` and `retro`
+`websocketd` and `retro` can be replaced with different versions and will be linked to the container as a volume.
+
+The source code to the Retro binaries provided can be found at https://github.com/crcx/retroforth
